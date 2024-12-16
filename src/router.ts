@@ -1,16 +1,25 @@
 
 import { Router } from "express";
-import { User } from "./models/User";
+import { createUser, login } from "./handlers";
+import { body } from 'express-validator'
+
 
 const router = Router()
 
 
-router.post('/', async (req, res) => {
+router.post('/',
 
-    await User.create(req.body)
-    res.json({ mensaje: 'creado' })
+    body('handle').notEmpty().withMessage('El handle no puede ir vacio'),
+    body('email').isEmail().withMessage('email no valido'),
+    body('name').notEmpty().withMessage('El nombre no puede ir vacio'),
+    body('password').isLength({ min: 8 }).withMessage('El password no puede ir vacio'),
+    createUser)
 
-})
+router.post('/auth/login',
+    body('email').isEmail().withMessage('email no valido'),
+    body('password').notEmpty().withMessage('El password es obligatorio'),
+    
+    login)
 
 
 
