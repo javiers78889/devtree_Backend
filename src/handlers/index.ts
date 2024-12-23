@@ -46,7 +46,7 @@ export const login = async (req: Request, res: Response) => {
     }
     const user = await User.findOne({ email })
     if (!user) {
-        const error = new Error('Este usuario no existe')
+        const error = new Error('Datos Incorrectos')
         res.status(401).json({ error: error.message })
     } else {
         const result = await checkPassword(password, user.password)
@@ -54,7 +54,7 @@ export const login = async (req: Request, res: Response) => {
             res.status(200).json('Logueado')
 
         } else {
-            const error = new Error('Contraseña Incorrecta')
+            const error = new Error('Datos Incorrectos')
             res.status(401).json({ error: error.message })
         }
 
