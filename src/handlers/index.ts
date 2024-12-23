@@ -4,6 +4,7 @@ import type { Response, Request } from "express"
 import { checkPassword, hashpassword } from "../utils/aut"
 import { validationResult } from "express-validator"
 import slugify from "slugify"
+import { generateToken } from "../utils/jwt"
 
 
 export const createUser = async (req: Request, res: Response) => {
@@ -39,19 +40,26 @@ export const createUser = async (req: Request, res: Response) => {
 
 
 export const login = async (req: Request, res: Response) => {
+    const respuesta = []
     const { email, password } = req.body
     let errors = validationResult(req)
     if (!errors.isEmpty()) {
         res.status(400).json({ mensaje: errors })
     }
     const user = await User.findOne({ email })
+
     if (!user) {
         const error = new Error('Datos Incorrectos')
         res.status(401).json({ error: error.message })
     } else {
         const result = await checkPassword(password, user.password)
         if (result) {
-            res.status(200).json('Logueado')
+         
+            const jwt = generateToken({id:user._id})
+            respuesta.push(jwt)
+            respuesta.push('Logueado')
+
+            res.status(201).json(respuesta)
 
         } else {
             const error = new Error('Datos Incorrectos')

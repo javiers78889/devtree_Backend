@@ -5,12 +5,13 @@ export const corsConfig: CorsOptions = {
         const lista = [process.env.ORIGENES]
 
         if (process.argv[2] === '--api') {
-            lista.push('undefined')
+            lista.push(undefined)
         }
 
         if (lista.includes(origin)) {
             callback(null, true)
         } else {
+            
             callback(new Error('Error CORS'))
         }
 
