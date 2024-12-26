@@ -1,6 +1,6 @@
 import { Error } from "mongoose"
 import { User } from "../models/User"
-import type { Response, Request } from "express"
+import type { Response, Request, NextFunction } from "express"
 import { checkPassword, hashpassword } from "../utils/aut"
 import { validationResult } from "express-validator"
 import slugify from "slugify"
@@ -64,8 +64,30 @@ export const login = async (req: Request, res: Response) => {
     }
 }
 
-export const getUsers = (req:Request,res:Response) => {
+export const getUsers = (req: Request, res: Response) => {
 
     res.status(202).json(req.user)
+
+}
+export const updateUsers = async (req: Request, res: Response) => {
+    try {
+        const { description } = req.body
+        const handler = slugify(req.body.handle, '')
+        const handlerExiste = await User.findOne({ handle: handler })
+        if (handlerExiste && handlerExiste.email !== req.user.email) {
+            const error = new Error('Este handler no esta disponible')
+            res.status(400).json({ error: error.message })
+        } else {
+
+
+            req.user.description = description
+            req.user.handle = handler
+
+            await req.user.save()
+            res.status(201).json('Actualizado')
+        }
+    } catch (error) {
+        res.status(500).json({ error: error })
+    }
 
 }

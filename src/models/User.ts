@@ -1,18 +1,19 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-export type TUser = {
+export interface TUser extends Document {
     handle: string
     name: string
     email: string
-    password: string
+    password: string,
+    description: string
 }
 const userSchema = new Schema({
     "handle": {
         type: String,
         required: true,
         trim: true,
-        unique:true,
-        lowercase:true,
+        unique: true,
+        lowercase: true,
     },
     "name": {
         type: String,
@@ -30,6 +31,10 @@ const userSchema = new Schema({
         required: true,
         trim: true,
 
+    },
+    "description": {
+        type: String,
+        default: ''
     }
 })
 
