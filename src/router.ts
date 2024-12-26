@@ -1,7 +1,8 @@
 
 import { Router } from "express";
-import { createUser, login } from "./handlers";
+import { createUser, getUsers, login } from "./handlers";
 import { body } from 'express-validator'
+import { autenticate } from "./middleware/auth";
 
 
 const router = Router()
@@ -18,9 +19,9 @@ router.post('/',
 router.post('/auth/login',
     body('email').isEmail().withMessage('email no valido'),
     body('password').notEmpty().withMessage('El password es obligatorio'),
-    
+
     login)
 
-
+router.get('/users', autenticate, getUsers)
 
 export default router;

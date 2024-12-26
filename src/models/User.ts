@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-type TUser = {
+export type TUser = {
     handle: string
     name: string
     email: string
