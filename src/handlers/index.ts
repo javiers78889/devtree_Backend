@@ -5,6 +5,9 @@ import { checkPassword, hashpassword } from "../utils/aut"
 import { validationResult } from "express-validator"
 import slugify from "slugify"
 import { generateToken } from "../utils/jwt"
+import formidable from 'formidable'
+import cloudinary from "../config/cloudinary"
+import { v4 as uuid } from "uuid"
 
 
 export const createUser = async (req: Request, res: Response) => {
@@ -90,4 +93,28 @@ export const updateUsers = async (req: Request, res: Response) => {
         res.status(500).json({ error: error })
     }
 
+}
+export const uploadImage = async (req: Request, res: Response) => {
+    const form = formidable({ multiples: false })
+    form.parse(req, (error, fields, files) => {
+
+        cloudinary.uploader.upload(files.file[0].filepath, { public_id: uuid() }, async (error, result) => {
+            if (error) {
+
+                console.log(error)
+            }
+            if (result) {
+                req.user.image = result.secure_url
+                await req.user.save()
+                res.json({ image: result.secure_url })
+            }
+        })
+    })
+    try {
+
+    } catch (e) {
+        const error = new Error('Hubo un error')
+        res.status(500).json(error)
+
+    }
 }
