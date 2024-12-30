@@ -6,7 +6,8 @@ export interface TUser extends Document {
     email: string
     password: string,
     description: string,
-    image: string
+    image: string,
+    links: string
 }
 const userSchema = new Schema({
     "handle": {
@@ -40,6 +41,10 @@ const userSchema = new Schema({
     "image": {
         type: String,
         default: ''
+    },
+    links:{
+        type:String,
+        default:[]
     }
 })
 

@@ -74,7 +74,7 @@ export const getUsers = (req: Request, res: Response) => {
 }
 export const updateUsers = async (req: Request, res: Response) => {
     try {
-        const { description } = req.body
+        const { description, links } = req.body
         const handler = slugify(req.body.handle, '')
         const handlerExiste = await User.findOne({ handle: handler })
         if (handlerExiste && handlerExiste.email !== req.user.email) {
@@ -85,6 +85,7 @@ export const updateUsers = async (req: Request, res: Response) => {
 
             req.user.description = description
             req.user.handle = handler
+            req.user.links = links
 
             await req.user.save()
             res.status(201).json('Actualizado')
