@@ -2,7 +2,7 @@ import { Error } from "mongoose"
 import { User } from "../models/User"
 import type { Response, Request, NextFunction } from "express"
 import { checkPassword, hashpassword } from "../utils/aut"
-import { validationResult } from "express-validator"
+import { param, validationResult } from "express-validator"
 import slugify from "slugify"
 import { generateToken } from "../utils/jwt"
 import formidable from 'formidable'
@@ -117,5 +117,22 @@ export const uploadImage = async (req: Request, res: Response) => {
         const error = new Error('Hubo un error')
         res.status(500).json(error)
 
+    }
+}
+
+export const getUserByHandler = async (req: Request, res: Response) => {
+    try {
+        const { handle } = req.params
+        const response = await User.findOne({ handle }).select('-password -_id -email -__v')
+        if (response) {
+            res.status(201).json(response)
+
+        } else {
+            const error = new Error('No Hay Datos')
+            res.status(404).json({ error: error.message })
+        }
+    } catch (e) {
+        const error = new Error('Hubo un error')
+        res.status(500).json({ error: error.message })
     }
 }
