@@ -136,3 +136,22 @@ export const getUserByHandler = async (req: Request, res: Response) => {
         res.status(500).json({ error: error.message })
     }
 }
+
+export const findHandler = async (req: Request, res: Response) => {
+    try {
+        const { handle } = req.body
+
+        const response = await User.findOne({ handle })
+        if (response) {
+
+            res.status(201).json(response)
+        } else {
+            const error = new Error('Usuario No Encontrado')
+            res.status(404).json({ error: error.message })
+        }
+
+    } catch (e) {
+        const error = new Error('Hubo un error')
+        res.status(500).json({ error: error.message })
+    }
+}
